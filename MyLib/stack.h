@@ -1,8 +1,7 @@
 #ifndef STACK_H
-
 #define STACK_H
 
-#include <iostream>
+#include <stdexcept>
 
 template <typename T>
 class Stack
@@ -28,5 +27,41 @@ public:
     bool isFull();
     T peek();
 };
+
+// Template function definitions
+template <typename T>
+bool Stack<T>::push(T item) {
+    if (isFull()) {
+        return false;
+    }
+    stackArr[++top] = item;
+    return true;
+}
+
+template <typename T>
+T Stack<T>::pop() {
+    if (isEmpty()) {
+        throw std::out_of_range("Stack underflow");
+    }
+    return stackArr[top--];
+}
+
+template <typename T>
+bool Stack<T>::isEmpty() {
+    return (top == -1);
+}
+
+template <typename T>
+bool Stack<T>::isFull() {
+    return (top == size - 1);
+}
+
+template <typename T>
+T Stack<T>::peek() {
+    if (isEmpty()) {
+        throw std::out_of_range("Stack underflow");
+    }
+    return stackArr[top];
+}
 
 #endif
