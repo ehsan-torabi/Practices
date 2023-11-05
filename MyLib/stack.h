@@ -20,6 +20,7 @@ public:
     ~Stack()
     {
         delete[] stackArr;
+        top = -1;
     }
     bool push(T item);
     T pop();
