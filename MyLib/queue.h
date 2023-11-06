@@ -35,31 +35,39 @@ template <typename T>
 bool Queue<T>::isFull()
 {
     return (rear == size)
-
-    
 }
 
 template <typename T>
 bool Queue<T>::isEmpty()
 {
     return (front == 0)
-
-    
 }
 
 template <typename T>
 void Queue<T>::Enqueue(T element)
 {
-    if (this-> isFull())
+    if (this->isFull())
     {
         throw std::out_of_range("Queue is full");
     }
     else
     {
-        this -> queue[rear] = element;
+        this->queue[rear] = element;
         rear++;
     }
-    
+}
+
+template <typename T>
+T Queue<T>::Dequeue()
+{
+    if (this->isEmpty())
+    {
+        throw std::out_of_range("Queue is empty");
+    }
+    else
+    {
+        return this->queue[front++];
+    }
 }
 
 #endif
