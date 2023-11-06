@@ -1,6 +1,9 @@
 #ifndef QUEUE_H
 
 #define QUEUE_H
+
+#include <stdexcept>
+
 template <typename T>
 class Queue
 {
@@ -31,7 +34,7 @@ Queue<T>::~Queue()
 template <typename T>
 bool Queue<T>::isFull()
 {
-    return (rear == size-1)
+    return (rear == size)
 
     
 }
@@ -41,6 +44,21 @@ bool Queue<T>::isEmpty()
 {
     return (front == 0)
 
+    
+}
+
+template <typename T>
+void Queue<T>::Enqueue(T element)
+{
+    if (this-> isFull())
+    {
+        throw std::out_of_range("Queue is full");
+    }
+    else
+    {
+        this -> queue[rear] = element;
+        rear++;
+    }
     
 }
 
