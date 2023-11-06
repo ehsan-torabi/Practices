@@ -37,7 +37,7 @@ bool Queue<T>::isFull()
     }
     else
     {
-        return flase;
+        return false;
     }
     
 }
@@ -51,7 +51,7 @@ bool Queue<T>::isEmpty()
     }
     else
     {
-        return flase;
+        return false;
     }
     
 }
