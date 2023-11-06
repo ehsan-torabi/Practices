@@ -9,8 +9,7 @@ class Queue
 {
 private:
     int size, front, rear;
-    queue = new T[size];
-
+    T *queue;
 public:
     Queue(int size);
     ~Queue();
@@ -22,6 +21,7 @@ public:
 template <typename T>
 Queue<T>::Queue(int size) : size(size)
 {
+    queue = new T[size];
     front = rear = 0;
 }
 template <typename T>
@@ -34,13 +34,13 @@ Queue<T>::~Queue()
 template <typename T>
 bool Queue<T>::isFull()
 {
-    return (rear == size)
+    return (rear == size);
 }
 
 template <typename T>
 bool Queue<T>::isEmpty()
 {
-    return (front == 0)
+    return (front == rear);
 }
 
 template <typename T>
