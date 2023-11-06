@@ -31,28 +31,16 @@ Queue<T>::~Queue()
 template <typename T>
 bool Queue<T>::isFull()
 {
-    if (rear == size-1)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return (rear == size-1)
+
     
 }
 
 template <typename T>
 bool Queue<T>::isEmpty()
 {
-    if (front == 0)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return (front == 0)
+
     
 }
 
