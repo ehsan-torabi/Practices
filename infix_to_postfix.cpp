@@ -5,6 +5,12 @@
 
 using namespace std;
 
+struct Variable
+{
+	char name;
+	int value;
+};
+
 bool isOperator(char c)
 {
 	int ch = (int)c;
@@ -71,25 +77,18 @@ public:
 	}
 };
 
-float getValueFromArray(char varname, string *values, int size)
+float getValueFromArray(char varname, Variable *values, int size)
 {
 	char temp;
-	string value = "";
 	for (int i = 0; i < size; i++)
 	{
-		string item = values[i];
-		temp = item.at(0);
+		char temp = values[i].name;
 		if (varname == temp)
 		{
-			for (int j = 1; j < item.size(); j++)
-			{
-				value += item[j];
-			}
-
-			break;
+			return values[i].value;
 		}
 	}
-	return stof(value);
+	throw logic_error("Oprand is not blanced!");
 }
 
 float getResult(int a, int b, char op)
@@ -117,7 +116,7 @@ float getResult(int a, int b, char op)
 	}
 }
 
-float calculatePostfix(string postfix, string values[], int size)
+float calculatePostfix(string postfix, Variable values[], int size)
 {
 	Stack<float> stack(postfix.size());
 	for (char c : postfix)
@@ -131,10 +130,10 @@ float calculatePostfix(string postfix, string values[], int size)
 			stack.push(getResult(stack.pop(), stack.pop(), c));
 		}
 	}
-	return stack.peek();
+	return stack.pop();
 }
 
-void getVariableValue(string statment, string arr[])
+void getVariableValue(string statment, Variable arr[])
 {
 	string oprands = "";
 	for (char c : statment)
@@ -144,13 +143,13 @@ void getVariableValue(string statment, string arr[])
 			oprands += c;
 		}
 	}
-
 	for (int i = 0; i < oprands.size(); i++)
 	{
-		string op;
+		float op;
 		cout << "Please enter vlaue of " << oprands[i] << endl;
 		cin >> op;
-		arr[i] = oprands[i] + op;
+		arr[i].name = oprands[i];
+		arr[i].value = op;
 	}
 }
 
@@ -166,7 +165,7 @@ int main()
 {
 	string infixStatment = getInfix(); // Geting infix statment from user
 	int size = infixStatment.size();
-	string variableValues[size];
+	Variable variableValues[size];
 	getVariableValue(infixStatment, variableValues); // Geting oprand values from user and store those in variableValues[] array
 	PostFix pos(infixStatment);						 // Sending infix statment to Postfix class constructor for convert to postfix
 	string postfixStatment = pos.getPostFix();
