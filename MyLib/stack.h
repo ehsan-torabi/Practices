@@ -1,6 +1,6 @@
 #ifndef STACK_H
 #define STACK_H
-
+// This was written using an array for now.
 #include <stdexcept>
 
 template <typename T>
@@ -31,8 +31,10 @@ public:
 
 // Template function definitions
 template <typename T>
-bool Stack<T>::push(T item) {
-    if (isFull()) {
+bool Stack<T>::push(T item)
+{
+    if (isFull())
+    {
         return false;
     }
     stackArr[++top] = item;
@@ -40,26 +42,32 @@ bool Stack<T>::push(T item) {
 }
 
 template <typename T>
-T Stack<T>::pop() {
-    if (isEmpty()) {
+T Stack<T>::pop()
+{
+    if (isEmpty())
+    {
         throw std::out_of_range("Stack underflow");
     }
     return stackArr[top--];
 }
 
 template <typename T>
-bool Stack<T>::isEmpty() {
+bool Stack<T>::isEmpty()
+{
     return (top == -1);
 }
 
 template <typename T>
-bool Stack<T>::isFull() {
+bool Stack<T>::isFull()
+{
     return (top == size - 1);
 }
 
 template <typename T>
-T Stack<T>::peek() {
-    if (isEmpty()) {
+T Stack<T>::peek()
+{
+    if (isEmpty())
+    {
         throw std::out_of_range("Stack underflow");
     }
     return stackArr[top];

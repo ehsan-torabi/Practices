@@ -1,14 +1,15 @@
 #ifndef CQUEUE_H
 
 #define CQUEUE_H
-
-
+// This was written using an array for now.
+#include <stdexcept>
 template <typename T>
 class Cqueue
 {
 private:
     int size, front, rear;
     T *queue;
+
 public:
     Cqueue(int size);
     ~Cqueue();
@@ -33,7 +34,7 @@ Cqueue<T>::~Cqueue()
 template <typename T>
 bool Cqueue<T>::isFull()
 {
-    return (first == (rear+1)%size);
+    return (first == (rear + 1) % size);
 }
 
 template <typename T>
@@ -52,7 +53,7 @@ void Cqueue<T>::Enqueue(T element)
     else
     {
         this->queue[rear] = element;
-        rear=(rear+1)%size;
+        rear = (rear + 1) % size;
     }
 }
 
@@ -67,10 +68,9 @@ T Cqueue<T>::Dequeue()
     {
 
         T elemnt = this->queue[front];
-        front = (front+1)%size;
+        front = (front + 1) % size;
         return elemnt;
     }
 }
-
 
 #endif

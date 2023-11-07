@@ -1,7 +1,7 @@
 #ifndef QUEUE_H
 
 #define QUEUE_H
-
+// This was written using an array for now.
 #include <stdexcept>
 
 template <typename T>
@@ -10,6 +10,7 @@ class Queue
 private:
     int size, front, rear;
     T *queue;
+
 public:
     Queue(int size);
     ~Queue();
