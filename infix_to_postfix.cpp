@@ -146,7 +146,7 @@ void getVariableValue(string statment, Variable arr[])
 	for (int i = 0; i < oprands.size(); i++)
 	{
 		float op;
-		cout << "Please enter vlaue of " << oprands[i] << endl;
+		cout << "Please enter value of " << oprands[i] << endl;
 		cin >> op;
 		arr[i].name = oprands[i];
 		arr[i].value = op;
