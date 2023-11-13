@@ -32,8 +32,8 @@ bool isOperator(char c)
 class PostFix
 {
 private:
-	string statment;
-	void handleOprator(char element, Stack<char> *stack)
+	string statement;
+	void handleOperators(char element, Stack<char> *stack)
 	{
 		if (element == ')')
 		{
@@ -44,7 +44,7 @@ private:
 				operand = stack->pop();
 				if (operand != '(')
 				{
-					statment += operand;
+					statement += operand;
 				}
 			}
 		}
@@ -62,24 +62,24 @@ public:
 		{
 			if (isOperator(element))
 			{
-				handleOprator(element, &stack);
+				handleOperators(element, &stack);
 			}
 			else
 			{
-				statment += element;
+				statement += element;
 			}
 		}
 	}
 
 	string getPostFix()
 	{
-		return statment;
+		return statement;
 	}
 };
 
 float getValueFromArray(char varname, Variable *values, int size)
 {
-	char temp;
+	char temp = 0;
 	for (int i = 0; i < size; i++)
 	{
 		char temp = values[i].name;
@@ -88,7 +88,7 @@ float getValueFromArray(char varname, Variable *values, int size)
 			return values[i].value;
 		}
 	}
-	throw logic_error("Oprand is not blanced!");
+	throw logic_error("Operands is not balanced!");
 }
 
 float getResult(int a, int b, char op)
@@ -99,7 +99,7 @@ float getResult(int a, int b, char op)
 		return a * b;
 
 	case '/':
-		return a / b;
+		return (float)a / b;
 
 	case '+':
 		return a + b;
@@ -133,22 +133,22 @@ float calculatePostfix(string postfix, Variable values[], int size)
 	return stack.pop();
 }
 
-void getVariableValue(string statment, Variable arr[])
+void getVariableValue(string statement, Variable arr[])
 {
-	string oprands = "";
-	for (char c : statment)
+	string operands = "";
+	for (char c : statement)
 	{
 		if (!isOperator(c))
 		{
-			oprands += c;
+			operands += c;
 		}
 	}
-	for (int i = 0; i < oprands.size(); i++)
+	for (int i = 0; i < operands.size(); i++)
 	{
 		float op;
-		cout << "Please enter value of " << oprands[i] << endl;
+		cout << "Please enter vlaue of " << oprands[i] << endl;
 		cin >> op;
-		arr[i].name = oprands[i];
+		arr[i].name = operands[i];
 		arr[i].value = op;
 	}
 }
@@ -163,14 +163,14 @@ string getInfix()
 
 int main()
 {
-	string infixStatment = getInfix(); // Geting infix statment from user
-	int size = infixStatment.size();
+	string infixStatement = getInfix(); // Getting infix statement from user
+	const int size = infixStatement.size();
 	Variable variableValues[size];
-	getVariableValue(infixStatment, variableValues); // Geting oprand values from user and store those in variableValues[] array
-	PostFix pos(infixStatment);						 // Sending infix statment to Postfix class constructor for convert to postfix
-	string postfixStatment = pos.getPostFix();
-	float result = calculatePostfix(postfixStatment, variableValues, size); // Calculating result with postfix statment and oprand values
-	cout << "Infix: " << infixStatment << " -- Postfix: " << postfixStatment << endl;
+	getVariableValue(infixStatement, variableValues); // Getting operand values from user and store those in variableValues[] array
+	PostFix pos(infixStatement);						 // Sending infix statement to Postfix class constructor for convert to postfix
+	string postfixStatement = pos.getPostFix();
+	float result = calculatePostfix(postfixStatement, variableValues, size); // Calculating result with postfix statement and operand values
+	cout << "Infix: " << infixStatement << " -- Postfix: " << postfixStatement << endl;
 	cout << "Result -> " << result;
 
 	return 0;
