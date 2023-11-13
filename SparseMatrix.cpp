@@ -1,6 +1,6 @@
 #include <iostream>
 #include <iomanip>
-#include "Mylib/cqueue.h"
+
 #define MAX 1000
 
 using namespace std;
