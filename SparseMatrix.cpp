@@ -1,5 +1,6 @@
 #include <iostream>
-#define NAME_OF(v) #v
+#include <iomanip>
+#define MAX 1000
 
 using namespace std;
 
@@ -21,58 +22,54 @@ private:
     }
 
 public:
-    SparseMatrix(int row, int col);
-    SparseMatrix &operator=(const SparseMatrix &other);
-    SparseMatrix(SparseMatrix const &other);
+    SparseMatrix(int row, int col);          // Constructor that takes a matrix as an argument
+    SparseMatrix(SparseMatrix const &other); // Deep copy constructor
     ~SparseMatrix();
+    void insert(int row, int col, int val);
+    SparseMatrix &operator=(const SparseMatrix &other);
     SparseMatrix operator+(SparseMatrix const &oprand);
     SparseMatrix operator-(SparseMatrix const &oprand);
-    int getElement(int r, int c);
     SparseMatrix transpose();
     SparseMatrix getSparse();
+    int getElement(int r, int c);
     void printSparse();
     void printMatrix();
 };
 
-SparseMatrix::SparseMatrix(int row, int col) : rows(row), cols(col)
+void SparseMatrix::insert(int row, int col, int val)
 {
-    int dCount = 0;
+    arr[dataCount].col = col;
+    arr[dataCount].row = row;
+    arr[dataCount].data = val; // Fixed the typo
+    dataCount++;
+}
+
+SparseMatrix::SparseMatrix(int row, int col) : rows(row), cols(col) // Constructor that takes a matrix as an argument
+{
+    arr = new Data[MAX];
+    dataCount = 0;
     int input;
-    Data array[1000];
     for (int i = 0; i < row; i++)
     {
         for (int j = 0; j < col; j++)
         {
-            cout << "Please enter value of  [" << i << "][" << j << "]\n";
-            cin >> input;
+            cout << "Please enter value for : [" << i << "][" << j << "]" << endl;
+            cin >> input; // Get the element from the matrix
             if (input != 0)
             {
-
-                array[dCount].row = i;
-                array[dCount].col = j;
-                array[dCount].data = input;
-                dCount++;
+                insert(i, j, input);
             }
         }
     }
-    arr = new Data[dCount];
-    for (int i = 0; i < dCount; i++)
-    {
-        arr[i] = array[i];
-    }
-    dataCount = dCount;
 }
 
-SparseMatrix::SparseMatrix(SparseMatrix const &other) : rows(other.rows), cols(other.cols), dataCount(other.dataCount)
+SparseMatrix::SparseMatrix(SparseMatrix const &other) : rows(other.rows), cols(other.cols), dataCount(other.dataCount) // Deep copy constructor
 {
     arr = new Data[dataCount];
-    for (int i = 0; i < dataCount; i++)
+    for (int i = 0; i < dataCount; i++) // Copy the data from the other object
     {
         arr[i] = other.arr[i];
     }
-}
-void SparseMatrix::sort(Data *arr)
-{
 }
 
 SparseMatrix::~SparseMatrix()
@@ -80,133 +77,250 @@ SparseMatrix::~SparseMatrix()
     delete[] arr;
 }
 
-int SparseMatrix::getElement(int r, int c)
-
-{
-    if (r >= 0 && r <= this->rows && c >= 0 && c <= this->cols)
-    {
-        for (int i = 0; i < this->dataCount; i++)
-        {
-            if (arr[i].row == r && arr[i].col == c)
-            {
-                return arr[i].data;
-            }
-        }
-        return 0;
-    }
-
-    else
-    {
-        throw out_of_range("Index out of range");
-    }
-}
 SparseMatrix &SparseMatrix::operator=(const SparseMatrix &other)
 {
-    if (this != &other)
+    // Check for self-assignment
+    if (this == &other)
+        return *this;
+
+    // Delete the old data
+    delete[] arr;
+
+    // Copy the new data
+    rows = other.rows;
+    cols = other.cols;
+    dataCount = other.dataCount;
+    arr = new Data[dataCount];
+    for (int i = 0; i < dataCount; i++)
     {
-        delete[] arr;
-        rows = other.rows;
-        cols = other.cols;
-        dataCount = other.dataCount;
-        arr = new Data[dataCount];
-        for (int i = 0; i < dataCount; i++)
-        {
-            arr[i] = other.arr[i];
-        }
+        arr[i] = other.arr[i];
     }
+
     return *this;
 }
 
 SparseMatrix SparseMatrix::operator+(SparseMatrix const &oprand)
 {
-    SparseMatrix result(this->rows, this->cols, dataCount + oprand.dataCount);
-    if (rows == oprand.rows && cols == oprand.cols)
+    // Check if the operands have the same dimensions
+    if (rows != oprand.rows || cols != oprand.cols)
     {
-        Data temp;
-        SparseMatrix op = oprand;
-        int index = 0;
-        for (int i = 0; i < rows; i++)
+        throw invalid_argument("Matrices are not compatible for addition");
+    }
+
+    // Create a new matrix to store the result
+    SparseMatrix result(rows, cols, dataCount + oprand.dataCount);
+
+    // Add the corresponding elements
+    int i = 0, j = 0, k = 0;
+    while (i < dataCount && j < oprand.dataCount)
+    {
+        if (arr[i].row < oprand.arr[j].row)
         {
-            for (int j = 0; j < cols; j++)
+            result.arr[k++] = arr[i++];
+        }
+        else if (arr[i].row > oprand.arr[j].row)
+        {
+            result.arr[k++] = oprand.arr[j++];
+        }
+        else
+        {
+            if (arr[i].col < oprand.arr[j].col)
             {
-                int first = getElement(i, j);
-                int secend = op.getElement(i, j);
-                int tempRes = first + secend;
-                if (tempRes != 0)
-                {
-                    temp.row = i;
-                    temp.col = j;
-                    temp.data = tempRes;
-                    result.arr[index] = temp;
-                    index++;
-                }
-                else
-                {
-                    result.dataCount--;
-                }
+                result.arr[k++] = arr[i++];
+            }
+            else if (arr[i].col > oprand.arr[j].col)
+            {
+                result.arr[k++] = oprand.arr[j++];
+            }
+            else
+            {
+                result.arr[k].row = arr[i].row;
+                result.arr[k].col = arr[i].col;
+                result.arr[k].data = arr[i].data + oprand.arr[j].data;
+                k++;
+                i++;
+                j++;
             }
         }
-        result.dataCount = index;
-        return result;
     }
-    else
+
+    // Copy the remaining elements
+    while (i < dataCount)
     {
-        throw logic_error("matrices must have same dimensions");
+        result.arr[k++] = arr[i++];
     }
-}
-
-SparseMatrix SparseMatrix::operator-(SparseMatrix const &oprand)
-{
-    // return SparseMatrix;
-}
-
-SparseMatrix SparseMatrix::transpose()
-{
-    // return SparseMatrix();
-}
-
-SparseMatrix SparseMatrix::getSparse()
-{
-    SparseMatrix result(this->rows, this->cols, this->dataCount);
-    Data temp;
-    for (int i = 0; i < dataCount; i++)
+    while (j < oprand.dataCount)
     {
-        temp.row = arr[i].row;
-        temp.col = arr[i].col;
-        temp.data = arr[i].data;
-        result.arr[i] = temp;
+        result.arr[k++] = oprand.arr[j++];
     }
+
+    // Update the data count of the result
+    result.dataCount = k;
 
     return result;
 }
 
-void SparseMatrix::printSparse()
+SparseMatrix SparseMatrix::operator-(SparseMatrix const &oprand)
 {
-    if (dataCount != 0)
+    // Check if the operands have the same dimensions
+    if (rows != oprand.rows || cols != oprand.cols)
     {
-        cout << "row\t"
-             << "column\t"
-             << "value\n";
-        cout << dataCount << endl;
-        for (int i = 0; i < dataCount; i++)
+        throw invalid_argument("Matrices are not compatible for subtraction");
+    }
+
+    // Create a new matrix to store the result
+    SparseMatrix result(rows, cols, dataCount + oprand.dataCount);
+
+    // Subtract the corresponding elements
+    int i = 0, j = 0, k = 0;
+    while (i < dataCount && j < oprand.dataCount)
+    {
+        if (arr[i].row < oprand.arr[j].row)
         {
-            cout << this->arr[i].row << "\t";
-            cout << this->arr[i].col << "\t";
-            cout << this->arr[i].data << endl;
+            result.arr[k++] = arr[i++];
+        }
+        else if (arr[i].row > oprand.arr[j].row)
+        {
+            result.arr[k] = oprand.arr[j++];
+            result.arr[k].data = -result.arr[k].data;
+            k++;
+        }
+        else
+        {
+            if (arr[i].col < oprand.arr[j].col)
+            {
+                result.arr[k++] = arr[i++];
+            }
+            else if (arr[i].col > oprand.arr[j].col)
+            {
+                result.arr[k] = oprand.arr[j++];
+                result.arr[k].data = -result.arr[k].data;
+                k++;
+            }
+            else
+            {
+                result.arr[k].row = arr[i].row;
+                result.arr[k].col = arr[i].col;
+                result.arr[k].data = arr[i].data - oprand.arr[j].data;
+                k++;
+                i++;
+                j++;
+            }
         }
     }
-    else
+
+    // Copy the remaining elements
+    while (i < dataCount)
     {
-        cout << "Matrix has not data!";
+        result.arr[k++] = arr[i++];
     }
-    
+    while (j < oprand.dataCount)
+    {
+        result.arr[k] = oprand.arr[j++];
+        result.arr[k].data = -result.arr[k].data;
+        k++;
+    }
+
+    // Update the data count of the result
+    result.dataCount = k;
+
+    return result;
+}
+
+SparseMatrix SparseMatrix::transpose()
+{
+    // Create a new matrix to store the result
+    SparseMatrix result(cols, rows, dataCount);
+
+    // Swap the row and col values of each element
+    for (int i = 0; i < dataCount; i++)
+    {
+        result.arr[i].row = arr[i].col;
+        result.arr[i].col = arr[i].row;
+        result.arr[i].data = arr[i].data;
+    }
+
+    // Sort the result by row and col values
+    // result.sort(result.arr);
+
+    return result;
+}
+
+SparseMatrix SparseMatrix::getSparse()
+{
+    // Create a new matrix to store the result
+    SparseMatrix result(rows, cols, dataCount);
+
+    // Copy only the non-zero elements
+    int k = 0;
+    for (int i = 0; i < dataCount; i++)
+    {
+        if (arr[i].data != 0)
+        {
+            result.arr[k++] = arr[i];
+        }
+    }
+
+    // Update the data count of the result
+    result.dataCount = k;
+
+    return result; // Return the result
+}
+
+int SparseMatrix::getElement(int r, int c)
+{
+    // Check if the row and col values are valid
+    if (r < 0 || r >= rows || c < 0 || c >= cols)
+    {
+        throw out_of_range("Invalid row or col value");
+    }
+
+    // Search for the element in the array
+    for (int i = 0; i < dataCount; i++)
+    {
+        if (arr[i].row == r && arr[i].col == c)
+        {
+            return arr[i].data;
+        }
+    }
+
+    // If not found, return 0
+    return 0;
+}
+
+void SparseMatrix::printSparse()
+{
+    // Print the number of rows, cols, and non-zero elements
+    cout << "Sparse Matrix: " << endl;
+    cout << rows << " " << cols << " " << dataCount << endl;
+
+    // Print the row, col, and data values of each element
+    for (int i = 0; i < dataCount; i++)
+    {
+        cout << arr[i].row << " " << arr[i].col << " " << arr[i].data << endl;
+    }
+}
+
+void SparseMatrix::printMatrix()
+{
+    // Print the matrix in a tabular format
+    cout << "Matrix: " << endl;
+    for (int i = 0; i < rows; i++)
+    {
+        for (int j = 0; j < cols; j++)
+        {
+            cout << setw(5) << getElement(i, j) << " "; // Use setw to align the columns
+        }
+        cout << endl;
+    }
 }
 
 int main(int argc, char const *argv[])
 {
-    SparseMatrix sm(1, 1);
-    SparseMatrix s(1, 1);
-    SparseMatrix sum = (sm + s);
-    sum.printSparse();
+
+    // SparseMatrix sm(1, 2);
+    SparseMatrix s(1, 2);
+    // SparseMatrix sum = (sm + s);
+    s.printSparse();
     return 0;
 }
