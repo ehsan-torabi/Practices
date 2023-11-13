@@ -34,7 +34,7 @@ Cqueue<T>::~Cqueue()
 template <typename T>
 bool Cqueue<T>::isFull()
 {
-    return (first == (rear + 1) % size);
+    return (front == (rear + 1) % size);
 }
 
 template <typename T>
