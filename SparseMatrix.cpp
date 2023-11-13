@@ -1,5 +1,6 @@
 #include <iostream>
 #include <iomanip>
+#include "Mylib/cqueue.h"
 #define MAX 1000
 
 using namespace std;
@@ -20,23 +21,41 @@ private:
         arr = new Data[dataCount];
     }
 
+    int getIndex(int row, int col)
+    {
+        if (row > 0 || row <= rows || col > 0 || col <= cols)
+        {
+            for (int i = 0; i < dataCount; i++)
+            {
+                if (arr[i].row == row && arr[i].col == col)
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+        else
+        {
+            throw out_of_range("row or col is not valid!");
+        }
+    }
+
     void sort(Data *arr)
     {
-        Data first = arr[0];
-        Data Rtmp{};
-        Data Ctmp{};
-        for (int i = 1; i < dataCount; i++)
+        // Use a bubble sort algorithm
+        for (int i = 0; i < dataCount - 1; i++)
         {
-            if (first.row == arr[i].row && first.col < arr[i].col || first.row < arr[i].row && first.col == arr[i].col)
+            for (int j = 0; j < dataCount - i - 1; j++)
             {
-                Rtmp = arr[i];
-                arr[i] = first;
-                first = Rtmp;
+                // Compare the row values first, then the col values
+                if (arr[j].row > arr[j + 1].row || (arr[j].row == arr[j + 1].row && arr[j].col > arr[j + 1].col))
+                {
+                    // Swap the elements if they are not in order
+                    Data temp = arr[j];
+                    arr[j] = arr[j + 1];
+                    arr[j + 1] = temp;
+                }
             }
-            // else if (first.row == arr[i].row && first.col == arr[i].col)
-            // {
-            //     arr[i]. == 
-            // }
         }
     }
 
@@ -49,7 +68,6 @@ public:
     SparseMatrix operator+(SparseMatrix const &oprand);
     SparseMatrix operator-(SparseMatrix const &oprand);
     SparseMatrix transpose();
-    SparseMatrix getSparse();
     int getElement(int r, int c);
     void printSparse() const;
     void printMatrix();
@@ -57,12 +75,22 @@ public:
 
 void SparseMatrix::insert(int row, int col, int val)
 {
-    if (arr[dataCount].row != row && arr[dataCount].col != col && arr[dataCount].data != val)
+    int index = getIndex(row, col);
+    if (row < rows, col < cols)
     {
-        arr[dataCount].col = col;
-        arr[dataCount].row = row;
-        arr[dataCount].data = val;
-        dataCount++;
+        if (index == -1)
+        {
+            arr[dataCount].col = col;
+            arr[dataCount].row = row;
+            arr[dataCount].data = val;
+            dataCount++;
+        }
+        else
+        {
+            arr[index].col = col;
+            arr[index].row = row;
+            arr[index].data = val;
+        }
     }
 }
 
@@ -76,7 +104,7 @@ SparseMatrix::SparseMatrix(int row, int col) : rows(row), cols(col)
         for (int j = 0; j < col; j++)
         {
             cout << "Please enter value for : [" << i << "][" << j << "]" << endl;
-            cin >> input; // Get the element from the matrix
+            cin >> input; // Get the element from the user
             if (input != 0)
             {
                 insert(i, j, input);
@@ -257,35 +285,15 @@ SparseMatrix SparseMatrix::transpose()
     // Swap the row and col values of each element
     for (int i = 0; i < dataCount; i++)
     {
-
         result.arr[i].row = arr[i].col;
         result.arr[i].col = arr[i].row;
         result.arr[i].data = arr[i].data;
-
-        // Sort the result by row and col values
     }
-    // result.sort(result.arr);
+
+    // Sort the result by row and col values
+    result.sort(result.arr);
+
     return result;
-}
-SparseMatrix SparseMatrix::getSparse()
-{
-    // Create a new matrix to store the result
-    SparseMatrix result(rows, cols, dataCount);
-
-    // Copy only the non-zero elements
-    int k = 0;
-    for (int i = 0; i < dataCount; i++)
-    {
-        if (arr[i].data != 0)
-        {
-            result.arr[k++] = arr[i];
-        }
-    }
-
-    // Update the data count of the result
-    result.dataCount = k;
-
-    return result; // Return the result
 }
 
 int SparseMatrix::getElement(int r, int c)
@@ -324,7 +332,7 @@ void SparseMatrix::printSparse() const
 
 void SparseMatrix::printMatrix()
 {
-    // Print the matrix in a tabular format
+    // Print the matrix in a normal format
     cout << "Matrix: " << endl;
     for (int i = 0; i < rows; i++)
     {
@@ -339,10 +347,8 @@ void SparseMatrix::printMatrix()
 int main(int argc, char const *argv[])
 {
 
-    // SparseMatrix sm(1, 2);
-    SparseMatrix s(3, 2);
-    // SparseMatrix sum = (sm + s);
-    // sum.printSparse();
+    SparseMatrix s(2, 2);
+    s.insert(0, 0, 5);
     SparseMatrix trs = s.transpose();
     trs.printSparse();
     trs.printMatrix();
