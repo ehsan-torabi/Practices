@@ -15,14 +15,33 @@ class SparseMatrix
 private:
     int rows, cols, dataCount;
     Data *arr;
-    void sort(Data *arr);
     SparseMatrix(int rows, int cols, int dataCount) : dataCount(dataCount), rows(rows), cols(cols)
     {
         arr = new Data[dataCount];
     }
 
+    void sort(Data *arr)
+    {
+        Data first = arr[0];
+        Data Rtmp{};
+        Data Ctmp{};
+        for (int i = 1; i < dataCount; i++)
+        {
+            if (first.row == arr[i].row && first.col < arr[i].col || first.row < arr[i].row && first.col == arr[i].col)
+            {
+                Rtmp = arr[i];
+                arr[i] = first;
+                first = Rtmp;
+            }
+            // else if (first.row == arr[i].row && first.col == arr[i].col)
+            // {
+            //     arr[i]. == 
+            // }
+        }
+    }
+
 public:
-    SparseMatrix(int row, int col);          // Constructor that takes a matrix as an argument
+    SparseMatrix(int row, int col);
     SparseMatrix(SparseMatrix const &other); // Deep copy constructor
     ~SparseMatrix();
     void insert(int row, int col, int val);
@@ -32,19 +51,22 @@ public:
     SparseMatrix transpose();
     SparseMatrix getSparse();
     int getElement(int r, int c);
-    void printSparse();
+    void printSparse() const;
     void printMatrix();
 };
 
 void SparseMatrix::insert(int row, int col, int val)
 {
-    arr[dataCount].col = col;
-    arr[dataCount].row = row;
-    arr[dataCount].data = val; // Fixed the typo
-    dataCount++;
+    if (arr[dataCount].row != row && arr[dataCount].col != col && arr[dataCount].data != val)
+    {
+        arr[dataCount].col = col;
+        arr[dataCount].row = row;
+        arr[dataCount].data = val;
+        dataCount++;
+    }
 }
 
-SparseMatrix::SparseMatrix(int row, int col) : rows(row), cols(col) // Constructor that takes a matrix as an argument
+SparseMatrix::SparseMatrix(int row, int col) : rows(row), cols(col)
 {
     arr = new Data[MAX];
     dataCount = 0;
@@ -235,17 +257,16 @@ SparseMatrix SparseMatrix::transpose()
     // Swap the row and col values of each element
     for (int i = 0; i < dataCount; i++)
     {
+
         result.arr[i].row = arr[i].col;
         result.arr[i].col = arr[i].row;
         result.arr[i].data = arr[i].data;
+
+        // Sort the result by row and col values
     }
-
-    // Sort the result by row and col values
     // result.sort(result.arr);
-
     return result;
 }
-
 SparseMatrix SparseMatrix::getSparse()
 {
     // Create a new matrix to store the result
@@ -288,11 +309,11 @@ int SparseMatrix::getElement(int r, int c)
     return 0;
 }
 
-void SparseMatrix::printSparse()
+void SparseMatrix::printSparse() const
 {
     // Print the number of rows, cols, and non-zero elements
     cout << "Sparse Matrix: " << endl;
-    cout << rows << " " << cols << " " << dataCount << endl;
+    cout << "rows: " << rows << " cols: " << cols << " data count: " << dataCount << endl;
 
     // Print the row, col, and data values of each element
     for (int i = 0; i < dataCount; i++)
@@ -309,7 +330,7 @@ void SparseMatrix::printMatrix()
     {
         for (int j = 0; j < cols; j++)
         {
-            cout << setw(5) << getElement(i, j) << " "; // Use setw to align the columns
+            cout << setw(3) << getElement(i, j) << " "; // Use setw to align the columns
         }
         cout << endl;
     }
@@ -319,8 +340,11 @@ int main(int argc, char const *argv[])
 {
 
     // SparseMatrix sm(1, 2);
-    SparseMatrix s(1, 2);
+    SparseMatrix s(3, 2);
     // SparseMatrix sum = (sm + s);
-    s.printSparse();
+    // sum.printSparse();
+    SparseMatrix trs = s.transpose();
+    trs.printSparse();
+    trs.printMatrix();
     return 0;
 }
