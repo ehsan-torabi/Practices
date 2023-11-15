@@ -2,7 +2,7 @@
 
 using namespace std;
 
-// Non-recursive fibonachi
+// Non-recursive Fibonacci
 int fib(int n)
 {
     int t1 = 0, t2 = 1;
@@ -16,7 +16,7 @@ int fib(int n)
     return next;
 }
 
-// Recursive fibonachi
+// Recursive Fibonacci
 int rfib(int n)
 {
     if (n == 0)
