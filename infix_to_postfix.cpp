@@ -88,7 +88,7 @@ float getValueFromArray(char varname, Variable *values, int size)
 			return values[i].value;
 		}
 	}
-	throw logic_error("Operands is not balanced!");
+	throw logic_error("Operands is not balanced");
 }
 
 float getResult(int a, int b, char op)
