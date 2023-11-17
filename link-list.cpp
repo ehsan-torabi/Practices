@@ -66,7 +66,7 @@ public:
 	void insert(T data, int index);
 
 	// Insert data at the end
-	void insert(T data);
+	void append(T data);
 
 	// Get first element
 	Node<T> *getFirst();
@@ -111,12 +111,44 @@ bool List<T>::isEmpty()
 template <typename T>
 void List<T>::insert(T data, int index)
 {
-	// Implementation goes here
+    // If the index is out of range or the list is empty, append the data to the end of the list
+    if (isEmpty() || index >= size())
+    {
+        append(data);
+        return;
+    }
+
+    // If the index is 0, insert the data at the head of the list
+    if (index == 0)
+    {
+        list_head = new Node<T>(data, list_head);
+        return;
+    }
+
+    // Find the node at the given index and its previous node
+    Node<T> *prev = nullptr;
+    Node<T> *current = list_head;
+    for (int i = 0; i < index; i++)
+    {
+        prev = current;
+        current = current->getNext();
+    }
+
+    // Insert the new node between the previous node and the current node
+    Node<T> *newNode = new Node<T>(data, current);
+    prev->setNext(newNode);
+
+    // If the new node is inserted at the end of the list, update the tail of the list
+    if (current == nullptr)
+    {
+        list_tail = newNode;
+    }
 }
+
 
 // Function to insert a new node into the list
 template <typename T>
-void List<T>::insert(T data)
+void List<T>::append(T data)
 {
 	// Create a new node with the given data
 	Node<T> *newNode = new Node<T>(data);
@@ -265,9 +297,15 @@ int List<T>::count(T data)
 int main()
 {
 	List<float> list; // Create a list of floats
-	list.insert(12);  // Insert 12 into the list
-	list.insert(13);  // Insert 13 into the list
-	list.insert(13);  // Insert another 13 into the list
-	list.erase();
+	list.append(12);  
+	list.append(13); 
+	list.append(13);  
+	list.insert(15, 3);
+	list.append(116);
+	list.append(118);
+	for (Node<float> *n = list.getFirst(); n != nullptr; n = n->getNext())
+	{
+		cout << n->getValue() << endl;
+	}
 	cout << list.size(); // Print the size of the list
 }
