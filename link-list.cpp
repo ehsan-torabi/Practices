@@ -111,6 +111,12 @@ bool List<T>::isEmpty()
 template <typename T>
 void List<T>::insert(T data, int index)
 {
+	if (index < 0)
+	{
+		throw invalid_argument("An element cannot be inserted at a negative index.");
+	}
+	
+
     // If the index is out of range or the list is empty, append the data to the end of the list
     if (isEmpty() || index >= size())
     {
@@ -300,7 +306,7 @@ int main()
 	list.append(12);  
 	list.append(13); 
 	list.append(13);  
-	list.insert(15, 3);
+	list.insert(15, -1);
 	list.append(116);
 	list.append(118);
 	for (Node<float> *n = list.getFirst(); n != nullptr; n = n->getNext())
