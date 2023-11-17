@@ -1,5 +1,4 @@
 #include <iostream>
-#include "link-list.h"
 
 using namespace std;
 
@@ -213,7 +212,13 @@ void List<T>::erase()
 	}
 	else
 	{
-
+		Node<T> *temp = list_head;
+		for (Node<T> *n = list_head; temp != nullptr; n = temp)
+		{
+			temp = n->getNext();
+			delete n;
+		}
+		list_head = nullptr;
 	}
 }
 
@@ -259,10 +264,10 @@ int List<T>::count(T data)
 // Main function
 int main()
 {
-	List<float> list;	 // Create a list of floats
-	list.insert(12);	 // Insert 12 into the list
-	list.insert(13);	 // Insert 13 into the list
-	list.insert(13);	 // Insert another 13 into the list
+	List<float> list; // Create a list of floats
+	list.insert(12);  // Insert 12 into the list
+	list.insert(13);  // Insert 13 into the list
+	list.insert(13);  // Insert another 13 into the list
 	list.erase();
 	cout << list.size(); // Print the size of the list
 }
