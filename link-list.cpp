@@ -277,72 +277,87 @@ void List<T>::rmElement(T data)
 	// Implementation goes here
 }
 
+// Function to erase all nodes in the list
 template <typename T>
 void List<T>::erase()
 {
+	// If the list is empty, throw a logic error
 	if (isEmpty())
 	{
 		throw logic_error("List is empty");
 	}
 	else
 	{
+		// Iterate over each node in the list
 		Node<T> *temp = list_head;
 		for (Node<T> *n = list_head; temp != nullptr; n = temp)
 		{
+			// Get the next node and delete the current node
 			temp = n->getNext();
 			delete n;
 		}
+		// Set the head of the list to null
 		list_head = nullptr;
 	}
 }
 
+// Function to get the size of the list
 template <typename T>
 int List<T>::size()
 {
+	// If the list is empty, return 0
 	if (isEmpty())
 	{
 		return 0;
 	}
 	else
 	{
+		// Iterate over each node in the list and increment a counter
 		int i = 0;
 		for (Node<T> *n = list_head; n != nullptr; n = n->getNext())
 		{
 			i++;
 		}
+		// Return the counter
 		return i;
 	}
 }
 
+// Function to count the occurrences of a value in the list
 template <typename T>
 int List<T>::count(T data)
 {
+	// If the list is empty, return 0
 	if (isEmpty())
 	{
 		return 0;
 	}
 	else
 	{
+		// Iterate over each node in the list
 		int i = 0;
 		for (Node<T> *n = list_head; n != nullptr; n = n->getNext())
 		{
+			// If the value of the node is equal to the given data, increment a counter
 			if (n->getValue() == data)
 			{
 				i++;
 			}
 		}
+		// Return the counter
 		return i;
 	}
 }
 
+
 // Main function
 int main()
 {
-	List<float> list; // Create a list of floats
+	List<float> list; 
 	list.append(1);
 	list.append(3);
 	list.append(5);
-	list.rmElement(8);
+	list.rmElement(1);
 	for (Node<float> *n = list.getFirst(); n != nullptr; n = n->getNext())
 	{
 		cout << n->getValue() << endl;
