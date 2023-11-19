@@ -27,24 +27,25 @@ public:
 template <typename T>
 Node<T>::Node(T val, Node<T> *n) : next_Node(n), value(val)
 {
+	// Empty constructor
 }
 
 template <typename T>
 T Node<T>::getValue() const
 {
-	return value;
+	return value; // Return value of this node
 }
 
 template <typename T>
 Node<T> *Node<T>::getNext() const
 {
-	return next_Node;
+	return next_Node; // Return next node address of this node
 }
 
 template <typename T>
 void Node<T>::setNext(Node<T> *next)
 {
-	next_Node = next;
+	next_Node = next; // Set the address of the next node for this node to the received next parameter
 }
 
 // List class definition
@@ -100,57 +101,57 @@ public:
 template <typename T>
 List<T>::List() : list_head(nullptr), list_tail(nullptr)
 {
+	// Empty constructor
 }
 
 template <typename T>
 bool List<T>::isEmpty()
 {
-	return (list_head == nullptr);
+	return (list_head == nullptr); // Return true if list_head address equal to one node else return false
 }
 
 template <typename T>
 void List<T>::insert(T data, int index)
 {
+	// Check negative index and if true throw a exception
 	if (index < 0)
 	{
 		throw invalid_argument("An element cannot be inserted at a negative index.");
 	}
-	
 
-    // If the index is out of range or the list is empty, append the data to the end of the list
-    if (isEmpty() || index >= size())
-    {
-        append(data);
-        return;
-    }
+	// If the index is out of range or the list is empty, append the data to the end of the list
+	if (isEmpty() || index >= size())
+	{
+		append(data);
+		return;
+	}
 
-    // If the index is 0, insert the data at the head of the list
-    if (index == 0)
-    {
-        list_head = new Node<T>(data, list_head);
-        return;
-    }
+	// If the index is 0, insert the data at the head of the list
+	if (index == 0)
+	{
+		list_head = new Node<T>(data, list_head);
+		return;
+	}
 
-    // Find the node at the given index and its previous node
-    Node<T> *prev = nullptr;
-    Node<T> *current = list_head;
-    for (int i = 0; i < index; i++)
-    {
-        prev = current;
-        current = current->getNext();
-    }
+	// Find the node at the given index and its previous node
+	Node<T> *prev = nullptr;
+	Node<T> *current = list_head;
+	for (int i = 0; i < index; i++)
+	{
+		prev = current;
+		current = current->getNext();
+	}
 
-    // Insert the new node between the previous node and the current node
-    Node<T> *newNode = new Node<T>(data, current);
-    prev->setNext(newNode);
+	// Insert the new node between the previous node and the current node
+	Node<T> *newNode = new Node<T>(data, current);
+	prev->setNext(newNode);
 
-    // If the new node is inserted at the end of the list, update the tail of the list
-    if (current == nullptr)
-    {
-        list_tail = newNode;
-    }
+	// If the new node is inserted at the end of the list, update the tail of the list
+	if (current == nullptr)
+	{
+		list_tail = newNode;
+	}
 }
-
 
 // Function to insert a new node into the list
 template <typename T>
@@ -232,7 +233,42 @@ Node<T> *List<T>::getElement(T data)
 template <typename T>
 void List<T>::rmElement(int index)
 {
-	// Implementation goes here
+	// if negative index or list is empty or index greater than list size then throw a exception
+	if (index < 0 || isEmpty() || index >= size())
+	{
+		throw invalid_argument("An element cannot be removed at this index or list is empty.");
+	}
+
+	// If the index is 0, remove the node at the head of the list
+	if (index == 0)
+	{
+		Node<T> *temp = list_head;
+		list_head = list_head->getNext();
+		delete temp;
+		return;
+	}
+
+	// Find the node at the given index and its previous node
+	Node<T> *prev = nullptr;
+	Node<T> *current = list_head;
+	for (int i = 0; i < index; i++)
+	{
+		prev = current;
+		current = current->getNext();
+	}
+
+	// If the old node is removed at the end of the list, update the tail of the list
+	if (current->getNext() == nullptr)
+	{
+		list_tail = prev;
+		prev->setNext(nullptr);
+		delete current;
+		return;
+	}
+
+	// // Remove the node if the node was in beetween list head and list tail
+	prev->setNext(current->getNext());
+	delete current;
 }
 
 template <typename T>
@@ -303,15 +339,13 @@ int List<T>::count(T data)
 int main()
 {
 	List<float> list; // Create a list of floats
-	list.append(12);  
-	list.append(13); 
-	list.append(13);  
-	list.insert(15, -1);
-	list.append(116);
-	list.append(118);
+	list.append(1);
+	list.append(3);
+	list.append(5);
+	list.rmElement(8);
 	for (Node<float> *n = list.getFirst(); n != nullptr; n = n->getNext())
 	{
 		cout << n->getValue() << endl;
 	}
-	cout << list.size(); // Print the size of the list
+	// cout << list.size(); // Print the size of the list
 }
