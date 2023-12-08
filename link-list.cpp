@@ -48,9 +48,9 @@ void Node<T>::setNext(Node<T> *next)
 	next_Node = next; // Set the address of the next node for this node to the received next parameter
 }
 
-										//--------------------- List class definition ---------------------
+										//--------------------- LinkList class definition ---------------------
 template <typename T>
-class List
+class LinkList
 {
 private:
 	Node<T> *list_head; // Head of the list
@@ -58,7 +58,7 @@ private:
 
 public:
 	// Constructor
-	List();
+	LinkList();
 
 	// Check if list is empty
 	bool isEmpty();
@@ -97,21 +97,21 @@ public:
 	int count(T n);
 };
 
-										//--------------------- List class implementation ---------------------
+										//--------------------- LinkList class implementation ---------------------
 template <typename T>
-List<T>::List() : list_head(nullptr), list_tail(nullptr)
+LinkList<T>::LinkList() : list_head(nullptr), list_tail(nullptr)
 {
 	// Empty constructor
 }
 
 template <typename T>
-bool List<T>::isEmpty()
+bool LinkList<T>::isEmpty()
 {
 	return (list_head == nullptr); // Return true if list_head address equal to one node else return false
 }
 
 template <typename T>
-void List<T>::insert(T data, int index)
+void LinkList<T>::insert(T data, int index)
 {
 	// Check negative index and if true throw a exception
 	if (index < 0)
@@ -155,7 +155,7 @@ void List<T>::insert(T data, int index)
 
 // Function to insert a new node into the last of list
 template <typename T>
-void List<T>::append(T data)
+void LinkList<T>::append(T data)
 {
 	// Create a new node with the given data
 	Node<T> *newNode = new Node<T>(data);
@@ -175,19 +175,19 @@ void List<T>::append(T data)
 }
 
 template <typename T>
-Node<T> *List<T>::getFirst()
+Node<T> *LinkList<T>::getFirst()
 {
 	return list_head;
 }
 
 template <typename T>
-Node<T> *List<T>::getLast()
+Node<T> *LinkList<T>::getLast()
 {
 	return list_tail;
 }
 
 template <typename T>
-T List<T>::getValue(int index)
+T LinkList<T>::getValue(int index)
 {
 	if (!isEmpty() || index < 0)
 	{
@@ -205,12 +205,12 @@ T List<T>::getValue(int index)
 	}
 	else
 	{
-		throw out_of_range("List is empty !");
+		throw out_of_range("LinkList is empty !");
 	}
 }
 
 template <typename T>
-Node<T> *List<T>::getElement(T data)
+Node<T> *LinkList<T>::getElement(T data)
 {
 	if (!isEmpty())
 	{
@@ -226,12 +226,12 @@ Node<T> *List<T>::getElement(T data)
 	}
 	else
 	{
-		throw out_of_range("List is empty !");
+		throw out_of_range("LinkList is empty !");
 	}
 }
 
 template <typename T>
-void List<T>::rmIndex(int index)
+void LinkList<T>::rmIndex(int index)
 {
 	// If negative index or list is empty or index greater than list size then throw a exception
 	if (index < 0 || isEmpty() || index >= size())
@@ -272,7 +272,7 @@ void List<T>::rmIndex(int index)
 }
 
 template <typename T>
-void List<T>::rmElement(T data)
+void LinkList<T>::rmElement(T data)
 {
 	Node<T> *prev = nullptr;
 	Node<T> *current = list_head;
@@ -311,12 +311,12 @@ void List<T>::rmElement(T data)
 
 // Function to erase all nodes in the list
 template <typename T>
-void List<T>::erase()
+void LinkList<T>::erase()
 {
 	// If the list is empty, throw a logic error
 	if (isEmpty())
 	{
-		throw logic_error("List is empty");
+		throw logic_error("LinkList is empty");
 	}
 	else
 	{
@@ -335,7 +335,7 @@ void List<T>::erase()
 
 // Function to get the size of the list
 template <typename T>
-int List<T>::size()
+int LinkList<T>::size()
 {
 	// If the list is empty, return 0
 	if (isEmpty())
@@ -357,7 +357,7 @@ int List<T>::size()
 
 // Function to count the occurrences of a value in the list
 template <typename T>
-int List<T>::count(T data)
+int LinkList<T>::count(T data)
 {
 	// If the list is empty, return 0
 	if (isEmpty())
@@ -384,7 +384,7 @@ int List<T>::count(T data)
 										//--------------------- Main Function ---------------------
 int main()
 {
-	List<float> list;
+	LinkList<float> list;
 	list.append(1);
 	list.append(3);
 	list.append(5);
@@ -393,5 +393,5 @@ int main()
 	{
 		cout << n->getValue() << endl;
 	}
-	cout << "List size : "<<  list.size(); 
+	cout << "LinkList size : "<<  list.size(); 
 }
