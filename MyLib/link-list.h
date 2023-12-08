@@ -276,8 +276,14 @@ void LinkList<T>::rmIndex(int index)
 template <typename T>
 void LinkList<T>::rmElement(T data)
 {
+
+	if (isEmpty())
+	{
+		throw invalid_argument("Element cannot be removed. List is empty.");
+	}
+
 	Node<T> *prev = nullptr;
-	Node<T> *current = list_head;
+	Node<T> *current = nullptr;
 	for (Node<T> *n = list_head; n != nullptr; n = n->getNext())
 	{
 		// If the value of the node is equal to the given data, increment a counter
@@ -287,6 +293,11 @@ void LinkList<T>::rmElement(T data)
 			break;
 		}
 		prev = n;
+	}
+    
+    if (current==nullptr)
+    {
+        throw invalid_argument("Element not exist !!");
 	}
 
 	if (current->getValue() == list_head->getValue())
