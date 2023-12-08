@@ -2,7 +2,7 @@
 
 using namespace std;
 
-// Node class definition
+										//--------------------- Node class definition ---------------------
 template <typename T>
 class Node
 {
@@ -23,7 +23,7 @@ public:
 	void setNext(Node<T> *next);
 };
 
-// Node class implementation
+										//--------------------- Node class implementation ---------------------
 template <typename T>
 Node<T>::Node(T val, Node<T> *n) : next_Node(n), value(val)
 {
@@ -48,7 +48,7 @@ void Node<T>::setNext(Node<T> *next)
 	next_Node = next; // Set the address of the next node for this node to the received next parameter
 }
 
-// List class definition
+										//--------------------- List class definition ---------------------
 template <typename T>
 class List
 {
@@ -82,7 +82,7 @@ public:
 	Node<T> *getElement(T data);
 
 	// Remove element at specific index
-	void rmElement(int index);
+	void rmIndex(int index);
 
 	// Remove element with specific value
 	void rmElement(T data);
@@ -97,7 +97,7 @@ public:
 	int count(T n);
 };
 
-// List class implementation
+										//--------------------- List class implementation ---------------------
 template <typename T>
 List<T>::List() : list_head(nullptr), list_tail(nullptr)
 {
@@ -153,7 +153,7 @@ void List<T>::insert(T data, int index)
 	}
 }
 
-// Function to insert a new node into the list
+// Function to insert a new node into the last of list
 template <typename T>
 void List<T>::append(T data)
 {
@@ -231,9 +231,9 @@ Node<T> *List<T>::getElement(T data)
 }
 
 template <typename T>
-void List<T>::rmElement(int index)
+void List<T>::rmIndex(int index)
 {
-	// if negative index or list is empty or index greater than list size then throw a exception
+	// If negative index or list is empty or index greater than list size then throw a exception
 	if (index < 0 || isEmpty() || index >= size())
 	{
 		throw invalid_argument("An element cannot be removed at this index or list is empty.");
@@ -266,7 +266,7 @@ void List<T>::rmElement(int index)
 		return;
 	}
 
-	// // Remove the node if the node was in beetween list head and list tail
+	// Remove the node if the node was in beetween list head and list tail
 	prev->setNext(current->getNext());
 	delete current;
 }
@@ -274,7 +274,39 @@ void List<T>::rmElement(int index)
 template <typename T>
 void List<T>::rmElement(T data)
 {
-	// Implementation goes here
+	Node<T> *prev = nullptr;
+	Node<T> *current = list_head;
+	for (Node<T> *n = list_head; n != nullptr; n = n->getNext())
+	{
+		// If the value of the node is equal to the given data, increment a counter
+		if (n->getValue() == data)
+		{
+			current = n;
+			break;
+		}
+		prev = n;
+	}
+
+	if (current->getValue() == list_head->getValue())
+	{
+		Node<T> *temp = list_head;
+		list_head = list_head->getNext();
+		delete temp;
+		return;
+	}
+
+	// If the old node is removed at the end of the list, update the tail of the list
+	if (current->getNext() == nullptr)
+	{
+		list_tail = prev;
+		prev->setNext(nullptr);
+		delete current;
+		return;
+	}
+
+	// Remove the node if the node was in beetween list head and list tail
+	prev->setNext(current->getNext());
+	delete current;
 }
 
 // Function to erase all nodes in the list
@@ -349,18 +381,17 @@ int List<T>::count(T data)
 	}
 }
 
-
-// Main function
+										//--------------------- Main Function ---------------------
 int main()
 {
-	List<float> list; 
+	List<float> list;
 	list.append(1);
 	list.append(3);
 	list.append(5);
-	list.rmElement(1);
+	list.rmElement(5);
 	for (Node<float> *n = list.getFirst(); n != nullptr; n = n->getNext())
 	{
 		cout << n->getValue() << endl;
 	}
-	// cout << list.size(); // Print the size of the list
+	cout << "List size : "<<  list.size(); 
 }
