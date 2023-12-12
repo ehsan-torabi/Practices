@@ -23,6 +23,8 @@ public:
 template <typename T>
 Node<T>::Node(T val)
 {
+    leftChild=rightSibling=parrent=nullptr;
+    value=val;
 }
 template <typename T>
 Node<T> *Node<T>::getChild()
@@ -61,9 +63,9 @@ bool Node<T>::isLeaf()
 }
 
 template <typename T>
-void Node<T>::setValue(T value)
+void Node<T>::setValue(T val)
 {
-    this->value = value;
+    this->value = val;
 }
 
 template <typename T>
