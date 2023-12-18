@@ -1,100 +1,137 @@
 #include <iostream>
 #include <string>
+#include "MyLib/stack.h"
+#include "MyLib/cqueue.h"
+#include "MyLib/link-list.h"
 using namespace std;
 
-// Define the binary node template class
 template <typename T>
-class BinNode
+class TreeNode
 {
 private:
-    T value; // Value of the node
-    BinNode<T> *leftChild; // Pointer to the left child node
-    BinNode<T> *rightChild; // Pointer to the right child node
-
+    T value;                           // Value of the node
+    LinkList<TreeNode<T> *> *children; // List of child
 public:
     // Constructor
-    BinNode(T value) : value(value), leftChild(nullptr), rightChild(nullptr) {}
+    TreeNode(T value) : value(value)
+    {
+        children = new LinkList<TreeNode<T> *>();
+    }
 
-    // Getter for the left child
-    BinNode<T> *getLeftChild() const { return leftChild; }
+    // Getter for the children
+    LinkList<TreeNode<T> *> *getChildren() const { return children; }
 
-    // Getter for the right child
-    BinNode<T> *getRightChild() const { return rightChild; }
+    // Getter for the child in a special index 
+    TreeNode<T> *getChild(int index)
+    {
+        try
+        {
+            return children->getValue(index);
+        }
+        catch (const std::exception &e)
+        {
+            return nullptr;
+        }
+    }
 
     // Getter for the value
     T getValue() { return value; }
 
     // Check if the node is a leaf node
-    bool isLeaf() { return (leftChild == nullptr && rightChild == nullptr); }
+    bool isLeaf() { return (children.isEmpty()); }
 
-    // Setter for the left child
-    void setLeftChild(BinNode<T> *lc) { leftChild = lc; }
+    // Function for get degree of this node
+    int Degree()
+    {
+        return children->size();
+    }
 
-    // Setter for the right child
-    void setRightChild(BinNode<T> *rc) { rightChild = rc; }
+    // Adder for the children
+    void AddChild(TreeNode<T> *c) { children->append(c); }
 };
 
 // Define the binary tree traversal template class
 template <typename T>
-class BinTreeTraversal
+class TreeTraversal
 {
 private:
-    BinNode<T> *root; // Root of the binary tree
+    TreeNode<T> *root; // Root of the binary tree
 
     // Helper function for postfix traversal
-    void PostfixHelper(BinNode<T> *node, string &s)
+    void PostfixHelper(TreeNode<T> *node, string &s)
     {
-        if (node->getLeftChild() != nullptr)
+        if (node->Degree() > 2)
         {
-            PostfixHelper(node->getLeftChild(), s);
+            cout << "this just work in binary trees";
         }
-
-        if (node->getRightChild() != nullptr)
+        else
         {
-            PostfixHelper(node->getRightChild(), s);
-        }
+            if (node->getChild(0) != nullptr)
+            {
+                PostfixHelper(node->getChild(0), s);
+            }
 
-        s += to_string(node->getValue());
+            if (node->getChild(1) != nullptr)
+            {
+                PostfixHelper(node->getChild(1), s);
+            }
+
+            s += to_string(node->getValue());
+        }
     }
 
     // Helper function for prefix traversal
-    void PrefixHelper(BinNode<T> *node, string &s)
+    void PrefixHelper(TreeNode<T> *node, string &s)
     {
-        s += to_string(node->getValue());
-
-        if (node->getLeftChild() != nullptr)
+        if (node->Degree() > 2)
         {
-            PrefixHelper(node->getLeftChild(), s);
+            cout << "this just work in binary trees";
         }
-
-        if (node->getRightChild() != nullptr)
+        else
         {
-            PrefixHelper(node->getRightChild(), s);
+            s += to_string(node->getValue());
+
+            if (node->getChild(0) != nullptr)
+            {
+                PrefixHelper(node->getChild(0), s);
+            }
+
+            if (node->getChild(1) != nullptr)
+            {
+                PrefixHelper(node->getChild(1), s);
+            }
         }
     }
 
     // Helper function for infix traversal
-    void InfixHelper(BinNode<T> *node, string &s)
+    void InfixHelper(TreeNode<T> *node, string &s)
     {
-        if (node->getLeftChild() != nullptr)
+        if (node->Degree() > 2)
         {
-            InfixHelper(node->getLeftChild(), s);
+            cout << "this just work in binary trees";
         }
-
-        s += to_string(node->getValue());
-
-        if (node->getRightChild() != nullptr)
+        else
         {
-            InfixHelper(node->getRightChild(), s);
+            if (node->getChild(0) != nullptr)
+            {
+                InfixHelper(node->getChild(0), s);
+            }
+
+            s += to_string(node->getValue());
+
+            if (node->getChild(1) != nullptr)
+            {
+                InfixHelper(node->getChild(1), s);
+            }
         }
     }
 
 public:
     // Constructor
-    BinTreeTraversal(BinNode<T> *treeRoot) : root(treeRoot) {}
+    TreeTraversal(TreeNode<T> *treeRoot) : root(treeRoot) {}
 
     // Getter for the root
-    BinNode<T> *getRoot() const { return root; }
+    TreeNode<T> *getRoot() const { return root; }
 
     // Function for infix traversal
     string Infix()
@@ -119,22 +156,70 @@ public:
         PrefixHelper(root, s);
         return s;
     }
+    // Function for BFS (Breadth-first) traversal
+    string BFS()
+    {
+        Cqueue<TreeNode<T> *> tempQueue(10);
+        string tempStr = "";
+        tempQueue.Enqueue(root);
+        while (!tempQueue.isEmpty())
+        {
+            TreeNode<T> *tempNode = tempQueue.Dequeue();
+            tempStr += to_string(tempNode->getValue());
+            for (int i = 0; i < tempNode->Degree(); i++)
+            {
+                tempQueue.Enqueue(tempNode->getChild(i));
+            }
+        }
+        return tempStr;
+    }
+
+    // Function for DFS (Depth-first) traversal
+    string DFS()
+    {
+        Stack<TreeNode<T> *> tempStack(10);
+        string tempStr = "";
+        tempStack.push(root);
+        while (!tempStack.isEmpty())
+        {
+            TreeNode<T> *tempNode = tempStack.pop();
+            tempStr += to_string(tempNode->getValue());
+            for (int i = tempNode->Degree() - 1; 0 <= i; i--)
+            {
+                tempStack.push(tempNode->getChild(i));
+            }
+        }
+        return tempStr;
+    }
 };
 
 int main(int argc, char const *argv[])
 {
-    // Create a binary tree
-    BinNode<int> root(0);
-    root.setLeftChild(new BinNode<int>(1));
-    root.setRightChild(new BinNode<int>(2));
-    root.getLeftChild()->setLeftChild(new BinNode<int>(3));
-    root.getLeftChild()->setRightChild(new BinNode<int>(4));
 
-    // Perform tree traversals
-    BinTreeTraversal<int> b(&root);
-    cout << "Infix: " << b.Infix() << endl;
-    cout << "Postfix: " << b.Postfix() << endl;
-    cout << "Prefix: " << b.Prefix() << endl;
+    TreeNode<int> binary(1);
+    binary.AddChild(new TreeNode<int>(2));
+    binary.AddChild(new TreeNode<int>(3));
+    binary.getChild(0)->AddChild(new TreeNode<int>(4));
+    binary.getChild(0)->AddChild(new TreeNode<int>(5));
+    binary.getChild(1)->AddChild(new TreeNode<int>(6));
+    binary.getChild(1)->AddChild(new TreeNode<int>(7));
+    TreeTraversal<int> binaryTree(&binary);
+    cout << "----Binary Tree---- "<<endl;
+    cout << "Infix: " << binaryTree.Infix() << endl;
+    cout << "Postfix: " << binaryTree.Postfix() << endl;
+    cout << "Prefix: " << binaryTree.Prefix() << endl;
+    cout << "DFS: " << binaryTree.DFS() << endl;
+    cout << "BFS: " << binaryTree.BFS() << endl;
+    cout << "----Binary Tree---- "<<endl;
+    TreeNode<int> troot(0);
+    troot.AddChild(new TreeNode<int>(1));
+    troot.AddChild(new TreeNode<int>(2));
+    troot.AddChild(new TreeNode<int>(3));
+    troot.AddChild(new TreeNode<int>(4));
+    troot.getChildren()->getValue(0)->AddChild(new TreeNode<int>(5));
+    TreeTraversal<int> a(&troot);
+    cout << "DFS: " << a.DFS() << endl;
+    cout << "BFS: " << a.BFS() << endl;
 
     return 0;
 }
